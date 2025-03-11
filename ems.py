@@ -2,7 +2,7 @@ from customtkinter import *
 from PIL import Image
 from tkinter import ttk,messagebox
 import database
-
+import re
 def selection(event):
     selected_item=tree.selection()
     if selected_item:
@@ -31,6 +31,9 @@ def treeview_data():
     for employee in employees:
         tree.insert('',END,values=employee)
 
+def is_valid_phone_number(phone):
+    return bool(re.fullmatch(r"[6-9]\d{9}", phone))
+
 def new_employee():
     clear(True)
 
@@ -45,6 +48,8 @@ def add_employee():
         messagebox.showerror('Error','Name must be atleast two characters long')
     elif len(PhoneEntry.get()) != 10:
         messagebox.showerror('Error','Phone number must be 10 digits')
+    elif not is_valid_phone_number(PhoneEntry.get()):
+        messagebox.showerror('Error','Phone number must start with digits [6-9]')
     else:
         database.insert(idEntry.get(),nameEntry.get(),PhoneEntry.get(),roleBox.get(),genderBox.get(),salaryEntry.get())
         treeview_data()
